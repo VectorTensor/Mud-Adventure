@@ -1,0 +1,6 @@
+/target
+
+web/*
+!web/
+!web/index.html
+/.idea/
