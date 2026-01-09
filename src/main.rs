@@ -1,9 +1,12 @@
 use bevy::prelude::*;
-
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, prelude::*};
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 fn main() {
 
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(EguiPlugin::default())
+        .add_plugins(WorldInspectorPlugin::new())
         .add_systems(Startup, setup)
         .run();
 
@@ -15,7 +18,7 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>
 ) {
-    let CUBE_POSIION = Transform::from_xyz(0.0, 1.0, -2.0);
+    let cube_posiion = Transform::from_xyz(0.0, 1.0, -2.0);
     commands.spawn(
         (
             PointLight{
@@ -45,7 +48,26 @@ fn setup(
         (
             Mesh3d(meshes.add(Cuboid::new(1.0,1.0, 1.0))),
             MeshMaterial3d(materials.add(Color::WHITE)),
-            CUBE_POSIION
+            cube_posiion
+        )
+
+    );
+    commands.spawn(
+        (
+            Mesh3d(meshes.add(Cuboid::new(1.0,0.1, 1.0))),
+            MeshMaterial3d(materials.add(Color::WHITE)),
+            Transform::from_xyz(-5.5, 0.0, 0.0),
+            Name::new("Source")
+        )
+
+    );
+
+    commands.spawn(
+        (
+            Mesh3d(meshes.add(Cuboid::new(1.0,0.1, 1.0))),
+            MeshMaterial3d(materials.add(Color::WHITE)),
+            Transform::from_xyz(5.5, 0.0, 0.0),
+            Name::new("Sink")
         )
 
     );

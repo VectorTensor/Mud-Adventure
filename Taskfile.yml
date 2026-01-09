@@ -12,7 +12,7 @@ tasks:
   build-dev:
     desc: Build the project for WebGL (debug)
     cmds:
-      - cargo build --target wasm32-unknown-unknown
+      - cargo build  --target wasm32-unknown-unknown
       - wasm-bindgen --target web --out-dir web target/wasm32-unknown-unknown/debug/hello-world.wasm
     silent: false
 
