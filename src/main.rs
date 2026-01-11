@@ -1,6 +1,7 @@
 use bevy::{
     prelude::*, reflect::TypePath, render::render_resource::AsBindGroup, shader::ShaderRef,
 };
+use bevy::color::Color::Srgba;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, prelude::*};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -55,8 +56,7 @@ fn setup(
         (
             Mesh3d(meshes.add(Cuboid::new(1.0,1.0, 1.0))),
             MeshMaterial3d(custom_materials.add(CustomMaterial {})),
-            cube_posiion
-        )
+            cube_posiion )
 
     );
     commands.spawn(
@@ -78,10 +78,19 @@ fn setup(
         )
 
     );
+    commands.spawn(
+        (
+            Mesh3d(meshes.add(Cuboid::new(3.0,0.1, 1.0))),
+            MeshMaterial3d(custom_materials.add(CustomMaterial {})),
+            Transform::from_xyz(5.5, 0.0, 0.0),
+            Name::new("Prat")
+        )
+
+    );
+
 }
 
-#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-struct CustomMaterial {}
+#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)] struct CustomMaterial {}
 impl Material for CustomMaterial {
     fn fragment_shader() -> ShaderRef{
         SHADER_ASSET_PATH.into()
