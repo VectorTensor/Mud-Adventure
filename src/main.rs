@@ -1,22 +1,41 @@
 use bevy::{
     prelude::*, reflect::TypePath, render::render_resource::AsBindGroup, shader::ShaderRef,
 };
-use bevy::color::Color::Srgba;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, prelude::*};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy::render::render_resource::*;
+use bevy::pbr::{Material, StandardMaterial};
+use bevy::sprite::SpritePlugin;
+use bevy::sprite_render::{Material2d, Material2dPlugin};
 
-
-const SHADER_ASSET_PATH: &str = "shaders\\animate_shader.wgsl";
+const SHADER_ASSET_PATH: &str = "shaders/animate_shader.wgsl";
 fn main() {
 
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(MaterialPlugin::<CustomMaterial>::default())
+        .add_plugins(MaterialPlugin::<FlowBarMaterial>::default())
         .add_plugins(EguiPlugin::default())
         .add_plugins(WorldInspectorPlugin::new())
         .add_systems(Startup, setup)
         .run();
 
+}
+#[derive(Asset, AsBindGroup, TypePath, Debug, Clone)]
+pub struct FlowBarMaterial{
+    #[texture(0)]
+    #[sampler(1)]
+    pub texture: Handle<Image>,
+
+    #[uniform(2)]
+    pub fill: f32,
+
+}
+
+impl Material for FlowBarMaterial{
+    fn fragment_shader() -> ShaderRef {
+        "shaders/waterflow.wgsl".into()
+    }
 }
 
 
@@ -24,7 +43,9 @@ fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    mut custom_materials: ResMut<Assets<CustomMaterial>>
+    mut custom_materials: ResMut<Assets<CustomMaterial>>,
+    mut water_materials: ResMut<Assets<FlowBarMaterial>>,
+    asset_server: Res<AssetServer>,
 ) {
     let cube_posiion = Transform::from_xyz(0.0, 1.0, -2.0);
     commands.spawn(
@@ -80,13 +101,21 @@ fn setup(
     );
     commands.spawn(
         (
-            Mesh3d(meshes.add(Cuboid::new(3.0,0.1, 1.0))),
-            MeshMaterial3d(custom_materials.add(CustomMaterial {})),
-            Transform::from_xyz(5.5, 0.0, 0.0),
+            Mesh3d(meshes.add(Cuboid::new(1.0,0.1, 1.0))),
+            MeshMaterial3d(water_materials.add(FlowBarMaterial{
+                texture: asset_server.load("textures/water.jpg"),
+                fill: 1.0
+            })),
+            Transform::from_xyz(0.3, 2.2, 4.1)
+                .with_rotation(Quat::from_euler(EulerRot::XYZ, 1.3, 0.0, 0.0))
+            ,
             Name::new("Prat")
         )
 
     );
+
+
+
 
 }
 

@@ -1,15 +1,20 @@
 #import bevy_pbr::{
-    mesh_view_bindings::globals,
     forward_io::VertexOutput,
+    mesh_view_bindings::view,
+    pbr_types::{STANDARD_MATERIAL_FLAGS_DOUBLE_SIDED_BIT, PbrInput, pbr_input_new},
+    pbr_functions as fns,
+    pbr_bindings,
+     mesh_view_bindings::globals,
 }
+#import bevy_core_pipeline::tonemapping::tone_mapping
 
-@group(1) @binding(0)
+@group(#{MATERIAL_BIND_GROUP}) @binding(0)
 var bar_texture: texture_2d<f32>;
-@group(1) @binding(1)
+@group(#{MATERIAL_BIND_GROUP}) @binding(1)
 var bar_sampler: sampler;
 
 
-@group(2) @binding(0)
+@group(#{MATERIAL_BIND_GROUP}) @binding(2)
 var<uniform> fill: f32; // 0..1
 
 @fragment
