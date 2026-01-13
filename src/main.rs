@@ -36,6 +36,9 @@ impl Material for FlowBarMaterial{
     fn fragment_shader() -> ShaderRef {
         "shaders/waterflow.wgsl".into()
     }
+    fn alpha_mode(&self) -> AlphaMode {
+        AlphaMode::Blend
+    }
 }
 
 
@@ -101,10 +104,10 @@ fn setup(
     );
     commands.spawn(
         (
-            Mesh3d(meshes.add(Cuboid::new(1.0,0.1, 1.0))),
+            Mesh3d(meshes.add(Cuboid::new(4.0,0.0, 1.0))),
             MeshMaterial3d(water_materials.add(FlowBarMaterial{
                 texture: asset_server.load("textures/water.jpg"),
-                fill: 1.0
+                fill: 0.7
             })),
             Transform::from_xyz(0.3, 2.2, 4.1)
                 .with_rotation(Quat::from_euler(EulerRot::XYZ, 1.3, 0.0, 0.0))
